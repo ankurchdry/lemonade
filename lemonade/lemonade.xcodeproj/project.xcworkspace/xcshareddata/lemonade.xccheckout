@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>AFBEC783-4084-4685-8376-0BD1B495AB71</string>
+	<key>IDESourceControlProjectName</key>
+	<string>lemonade</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D66308609E619F448CE40FA32B1DE337CC97FB2A</key>
+		<string>https://github.com/kostapappas/lemonade</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>challenges/lemonade1/lemonade.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D66308609E619F448CE40FA32B1DE337CC97FB2A</key>
+		<string>../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/kostapappas/lemonade</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D66308609E619F448CE40FA32B1DE337CC97FB2A</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D66308609E619F448CE40FA32B1DE337CC97FB2A</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ios8projects</string>
+		</dict>
+	</array>
+</dict>
+</plist>
