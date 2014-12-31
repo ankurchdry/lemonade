@@ -300,7 +300,7 @@ class ViewController: UIViewController {
                         }
                     case 0.6...1.0:
                         if (lemonadeRatio<1) {
-                        println("customer \(index) has taste \(customertaste) for acidic lemonade and PAID!")
+                        println("customer \(index) has taste \(customertaste) for non acidic lemonade and PAID!")
                             paid = true
                             totalpaid++
                         }
@@ -343,7 +343,7 @@ class ViewController: UIViewController {
             else{
                 var refreshAlert = UIAlertController(
                     title: "End of day results",
-                    message: "Total Customers paid = \(totalpaid) \n Total customers =\(customers)",
+                    message: "Total Customers paid = \(totalpaid) \n Total customers =\(customers+1)",
                     preferredStyle: UIAlertControllerStyle.Alert)
                 
                 refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
