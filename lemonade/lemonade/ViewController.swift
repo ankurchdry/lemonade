@@ -53,16 +53,24 @@ class ViewController: UIViewController {
         
         currentGame = Game()
         weatherImageView.image = currentGame.weatherUIImage
-        switch currentGame.currentweather {
-            case 0: weatherLabel.text = "COLD"
-            case 1: weatherLabel.text = "FAIR"
-            default: weatherLabel.text = "WARM"
-        }
         updateUI ()
     }
     
     func updateUI () {
         if currentGame != nil {
+            //update the weather
+            switch currentGame.currentweather {
+            case 0:
+                weatherLabel.text = "COLD"
+                weatherImageView.image = UIImage(named: "cold")
+            case 1:
+                weatherLabel.text = "FAIR"
+                weatherImageView.image = UIImage(named: "mid")
+            default:
+                weatherLabel.text = "WARM"
+                weatherImageView.image = UIImage(named: "warm")
+            }
+            
             dollarLabel.text = "\(currentGame.money)"
             lemonLabel.text = "\(currentGame.lemons)"
             icecubeLabel.text = "\(currentGame.icecubes)"
@@ -233,11 +241,119 @@ class ViewController: UIViewController {
             size: 23)
         
 
+        updateUI()
         
     }
     
     func startButtonPressed (sender:UIButton!) {
         println("button tapped")
+        
+        //create lemonadeRation
+        var lemonadeRatio = 0.0
+        if currentGame.icecubeMix > 0{
+            lemonadeRatio = Double(currentGame.lemonsMix)/Double(currentGame.icecubeMix)
+        }
+        else{
+            lemonadeRatio = Double(currentGame.lemonsMix)  + 1 //acidic lemonade otherwise would be 1 if only one lemon exist!
+        }
+        
+        if (currentGame.lemonsMix > 0 ) || (currentGame.icecubeMix > 0 ) {
+            println ("Lemonade ration = \(lemonadeRatio)")
+        
+            //create random customers
+            var customers = Int(arc4random_uniform(UInt32(10)))
+            
+            //bonus affect them by the weather
+            if (currentGame.currentweather==0){
+                customers -= 3
+                if (customers < 0){
+                    customers = 0
+                }
+            }
+            
+            if (currentGame.currentweather==2){
+                customers += 5
+                
+            }
+            
+            println("TotalCustomers = \(customers+1)")
+        
+            var totalpaid = 0
+            for  index in 0...customers{
+                //for each customer create a random taste
+                var customertaste = Double(Int(arc4random_uniform(UInt32(9)) + 1))/10.0
+                var paid = false
+                
+                switch customertaste {
+                    case 0.0...0.399:
+                        if (lemonadeRatio>1) {
+                            println("customer \(index) has taste \(customertaste) for acidic lemonade and PAID!")
+                            paid = true
+                            totalpaid++
+                        }
+                    case 0.4...0.599:
+                        if (lemonadeRatio==1) {
+                            println("customer \(index) has taste \(customertaste) for Equal lemonade and PAID!")
+                            paid = true
+                            totalpaid++
+
+                        }
+                    case 0.6...1.0:
+                        if (lemonadeRatio<1) {
+                        println("customer \(index) has taste \(customertaste) for acidic lemonade and PAID!")
+                            paid = true
+                            totalpaid++
+                        }
+                    default: println("customer \(index) has taste \(customertaste) and No match, No Revenue")
+                }
+                if !paid{
+                    println("customer \(index) has taste \(customertaste) and No match, No Revenue")
+                }
+                else
+                {
+                    currentGame.money++
+                    updateUI()
+                }
+                //println("customer \(index) has taste \(customertaste)")
+            } //end check the customers
+            
+           
+            
+            //clear the states for next game
+            currentGame.lemonsMix = 0
+            currentGame.icecubeMix = 0
+            currentGame.lemonsSupplies = 0
+            currentGame.icecubeSupplies = 0
+            currentGame.currentweather =  Int(arc4random_uniform(UInt32(3)))
+            
+            if currentGame.money == 0 && currentGame.lemons==0 && currentGame.icecubes==0 {
+                
+                var refreshAlert = UIAlertController(
+                    title: "End of Game",
+                    message: "No money no funny! the game will restart automatically",
+                    preferredStyle: UIAlertControllerStyle.Alert)
+                
+                refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+                    //println("Handle Ok logic here")
+                }))
+                presentViewController(refreshAlert, animated: true, completion: nil)
+                startNewGame()
+
+            }
+            else{
+                var refreshAlert = UIAlertController(
+                    title: "End of day results",
+                    message: "Total Customers paid = \(totalpaid) \n Total customers =\(customers)",
+                    preferredStyle: UIAlertControllerStyle.Alert)
+                
+                refreshAlert.addAction(UIAlertAction(title: "Ok", style: .Default, handler: { (action: UIAlertAction!) in
+                    //println("Handle Ok logic here")
+                }))
+                presentViewController(refreshAlert, animated: true, completion: nil)
+            }
+            
+            updateUI()
+        }
     }
     
     func minusLemonPressed (sender:UIButton!) {
@@ -245,6 +361,17 @@ class ViewController: UIViewController {
         if currentGame != nil {
             if currentGame.lemonsSupplies > 0 {
                 currentGame.lemonsSupplies--
+                currentGame.money += currentGame.lemonCost
+                
+                
+                if (currentGame.lemons == 0){
+                    currentGame.lemonsMix--
+                }
+                else
+                {
+                    currentGame.lemons--
+                }
+                
                 updateUI()
             }
         }
@@ -255,6 +382,17 @@ class ViewController: UIViewController {
         if currentGame != nil {
             if currentGame.icecubeSupplies > 0 {
                 currentGame.icecubeSupplies--
+                currentGame.money += currentGame.iceCost
+                
+                
+                
+                if (currentGame.icecubes == 0 ){
+                    currentGame.icecubeMix--
+                }
+                else {
+                    currentGame.icecubes--
+                }
+                
                 updateUI()
             }
         }
@@ -262,16 +400,32 @@ class ViewController: UIViewController {
     
     func minusMixLemonPressed (sender:UIButton!) {
         println ("minus Mixlemon tapped")
+        if currentGame != nil {
+            if currentGame.lemonsMix > 0 {
+                currentGame.lemonsMix--
+                currentGame.lemons++
+                updateUI()
+            }
+        }
     }
     
     func minusMixIceCubePressed (sender:UIButton!) {
         println ("minus Mixicecube tapped")
+        if currentGame != nil {
+            if currentGame.icecubeMix > 0 {
+                currentGame.icecubeMix--
+                currentGame.icecubes++
+                updateUI()
+            }
+        }
     }
     
     func addLemonPressed (sender:UIButton!) {
         println ("add lemon tapped")
-        if currentGame != nil {
+        if (currentGame != nil) && ((currentGame.money - currentGame.lemonCost)>=0) {
                 currentGame.lemonsSupplies++
+                currentGame.money -= currentGame.lemonCost
+                currentGame.lemons++
                 updateUI()
             
         }
@@ -279,8 +433,10 @@ class ViewController: UIViewController {
     
     func addIceCubePressed (sender:UIButton!) {
         println ("add icecube tapped")
-        if currentGame != nil {
+        if (currentGame != nil) && ((currentGame.money - currentGame.iceCost)>=0) {
             currentGame.icecubeSupplies++
+            currentGame.money -= currentGame.iceCost
+            currentGame.icecubes++
             updateUI()
             
         }
@@ -288,10 +444,22 @@ class ViewController: UIViewController {
     
     func addMixLemonPressed (sender:UIButton!) {
         println ("add Mixlemon tapped")
+        if (currentGame != nil) && ((currentGame.lemons - 1)>=0) {
+            currentGame.lemonsMix++
+            currentGame.lemons--
+            updateUI()
+            
+        }
     }
     
     func addMixIceCubePressed (sender:UIButton!) {
         println ("add Mixicecube tapped")
+        if (currentGame != nil) && ((currentGame.icecubes - 1)>=0) {
+            currentGame.icecubeMix++
+            currentGame.icecubes--
+            updateUI()
+            
+        }
     }
     
     func createCustomLabel (xPercent: CGFloat, yPercent: CGFloat, widthPercent: CGFloat, heigthPercent: CGFloat, size: CGFloat) -> UILabel {
